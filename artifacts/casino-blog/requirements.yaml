@@ -1,0 +1,22 @@
+packages:
+  "framer-motion": "For premium smooth page transitions and luxury entrance animations"
+  "date-fns": "For formatting article publication dates"
+  "lucide-react": "For UI icons across the blog"
+  "clsx": "Utility for constructing CSS classes conditionally"
+  "tailwind-merge": "Utility to merge Tailwind classes without style conflicts"
+  "@tailwindcss/typography": "For beautifully styling rich HTML article content"
+
+images:
+  - path: "artifacts/casino-blog/public/images/hero-bg.png"
+    description: "Dark luxury abstract background with subtle gold dust, bokeh, and deep emerald green undertones, high-end editorial casino vibe, dark and moody"
+    aspect_ratio: "16:9"
+  - path: "artifacts/casino-blog/public/images/about-image.png"
+    description: "High-end luxury casino lounge with moody lighting, leather textures, mahogany, and fine gold accents, editorial photography style"
+    aspect_ratio: "16:9"
+  - path: "artifacts/casino-blog/public/images/article-placeholder.png"
+    description: "Abstract cinematic dark texture with subtle soft gold lighting leak, luxury premium feel, suitable as a background for text"
+    aspect_ratio: "16:9"
+
+notes:
+  - Hooks are imported from @workspace/api-client-react as per workspace structure
+  - Using framer-motion to add high-end editorial transitions typical of luxury brands

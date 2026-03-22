@@ -1,0 +1,212 @@
+Build a stunning, production-ready casino & gambling blog website using Next.js 14 
+(App Router) + Tailwind CSS. Articles and affiliate data are stored in Supabase 
+(PostgreSQL). The site must be fully SEO-optimized and handle hundreds of articles.
+
+---
+
+## SUPABASE SETUP
+
+Create a /lib/supabase.js client using @supabase/supabase-js.
+Read NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY from .env.local
+
+Database schema to create in Supabase:
+```sql
+CREATE TABLE articles (
+  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  title         TEXT        NOT NULL,
+  slug          TEXT        UNIQUE NOT NULL,
+  excerpt       TEXT,
+  content       TEXT,
+  category      TEXT,
+  image         TEXT,
+  author        TEXT,
+  author_bio    TEXT,
+  author_avatar TEXT,
+  focus_keyword TEXT,
+  meta_description TEXT,
+  date          DATE,
+  read_time     TEXT,
+  featured      BOOLEAN     DEFAULT false,
+  published     BOOLEAN     DEFAULT false,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE affiliates (
+  id          UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT    NOT NULL,
+  logo        TEXT,
+  rating      NUMERIC(2,1),
+  bonus       TEXT,
+  description TEXT,
+  link        TEXT,
+  badge       TEXT,
+  position    INTEGER DEFAULT 0,
+  active      BOOLEAN DEFAULT true
+);
+```
+
+Seed the tables with 6 sample articles and 4 sample affiliates directly via 
+Supabase JS client in a /lib/seed.js file.
+
+Sample article structure:
+- slug: "best-online-casinos-2025"
+- focus_keyword: "best online casinos 2025"
+- title: "Best Online Casinos in 2025: Expert Picks & Reviews"
+- category: one of: Casino Reviews, Slots, Poker, Sports Betting, Bonuses, Strategy
+- image: use Unsplash URLs (gambling/casino themed)
+- content: proper multi-paragraph HTML with H2 subheadings
+
+---
+
+## DESIGN DIRECTION
+
+Dark luxury aesthetic. High-end casino meets editorial magazine.
+- Background: #0a0a0f with subtle dark green undertones
+- Primary accent: rich gold (#C9A84C), shimmer on hover (#F0D080)
+- Secondary: deep emerald (#1a5c3a)
+- Fonts: "Playfair Display" (headings) + "DM Sans" (body) from Google Fonts
+- Subtle CSS noise grain texture on background
+- Gold 1px rule lines as dividers
+- Cards: dark glass-morphism — dark bg, subtle gold border on hover
+- Affiliate CTAs: gold gradient button, dark text, gold glow on hover
+- Feels like NYT × Vegas high-roller lounge
+- No purple gradients, no white backgrounds, no generic SaaS look
+
+---
+
+## PAGES & ROUTES
+
+### / — Homepage
+- Sticky navbar: logo left, category links center, gold "Top Casinos" CTA right
+- Full-width hero: large Playfair headline, subheadline, gold CTA button
+- Featured article: large card (fetched from Supabase where featured = true)
+- "Top Casino Picks": horizontal row of AffiliateCards (from Supabase)
+- "Latest Articles": 3-column card grid (paginated, 9 per page)
+- Category strip: horizontal scrollable pill nav
+- Newsletter signup bar (UI only)
+- Footer with disclaimer + responsible gambling badge
+
+### /articles/[slug] — Article page
+- generateStaticParams fetches all slugs from Supabase at build time
+- generateMetadata returns dynamic title, description, og tags, JSON-LD schema
+- Full-width featured image with dark gradient overlay
+- Breadcrumb: Home → Category → Title
+- ReadingProgress bar (gold, fixed top)
+- Article title (Playfair, large), author, date, read time
+- Rich HTML content rendered via dangerouslySetInnerHTML
+- AffiliateCards section mid-article and at the bottom
+- Related articles (same category, 3 cards)
+- Author bio box
+
+### /category/[category] — Category page
+- generateStaticParams from distinct categories in Supabase
+- Category hero, article count, article grid with pagination
+
+### /about — Static page
+
+### /sitemap.xml — Dynamic, generated from all published articles in Supabase
+### /robots.txt — Static, allow all, point to sitemap
+
+---
+
+## COMPONENTS
+
+### ArticleCard
+Props: { title, slug, excerpt, category, image, date, readTime }
+- Dark card, rounded-xl
+- 16:9 image, object-cover
+- Gold category badge overlaid top-left on image
+- Title in Playfair Display
+- 2-line excerpt clamp
+- "Read More →" in gold
+- Full card is a link
+
+### AffiliateCard ← PRIORITY COMPONENT
+Props: { name, logo, rating, bonus, description, link, badge }
+- Gold shimmer border (animated subtle glow)
+- Left: casino logo (80x80, rounded)
+- Center: casino name (bold), description (muted), gold star rating, 
+  bonus text in gold ("100% up to $500 + 50 Free Spins")
+- Right: big gold gradient CTA button "Claim Bonus →" 
+  opens link in new tab, rel="noopener noreferrer sponsored"
+- Optional badge ribbon top-right ("Editor's Pick", "Hot Deal", etc.)
+- On hover: gold glow box-shadow, scale(1.01) transform
+- Mobile: stacks vertically, CTA button full width
+
+### AffiliateCardCompact
+Smaller version for sidebars and mid-article placement.
+Horizontal layout: logo + name + bonus + small CTA button
+
+### CategoryBadge
+Gold pill, used on cards and article headers
+
+### ReadingProgress
+Fixed gold progress bar at top of article pages, fills on scroll
+
+### NewsletterBar
+Full-width dark section, gold headline, email input + button (UI only)
+
+### Breadcrumb
+Home → Category → Article, gold separator
+
+---
+
+## SEO REQUIREMENTS
+
+Every article page must have:
+- <title>{title} | CasinoKing</title>
+- <meta name="description" content={meta_description}>
+- <link rel="canonical" href={fullUrl}>
+- og:title, og:description, og:image, og:type="article"
+- twitter:card, twitter:title, twitter:description, twitter:image
+- JSON-LD Article schema:
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "image": image,
+    "datePublished": date,
+    "author": { "@type": "Person", "name": author },
+    "description": meta_description,
+    "keywords": focus_keyword
+  }
+- One H1 per page
+- Images with descriptive alt text
+- Semantic HTML throughout
+
+Category and homepage also get proper title + description + OG tags.
+
+---
+
+## DATA FETCHING RULES
+
+- Article list pages: fetch from Supabase with .select() filtering published = true
+- Pagination: use .range() for 9 articles per page
+- Category filter: .eq('category', category)
+- Single article: .eq('slug', slug).single()
+- Use generateStaticParams for all [slug] and [category] routes
+- Use revalidate = 3600 (ISR — pages rebuild every hour automatically)
+  This means new articles added to Supabase go live within 1 hour without redeployment
+
+---
+
+## EXTRAS
+
+- Fully responsive: 1-col mobile, 2-col tablet, 3-col desktop grids
+- AffiliateCard stacks on mobile
+- Smooth hover transitions everywhere
+- Sticky navbar with blur backdrop
+- All affiliate links: target="_blank" rel="noopener noreferrer sponsored"
+- Footer disclaimer: 
+  "This site contains affiliate links. We may earn a commission at no extra cost 
+  to you. Gambling involves risk. Please gamble responsibly. 18+"
+- Responsible gambling logos in footer (GamCare, BeGambleAware text badges)
+- .env.local.example file with all required env vars listed
+
+Build order:
+1. Supabase client + schema + seed data
+2. Core components (ArticleCard, AffiliateCard)
+3. Homepage
+4. Article page (most important for SEO)
+5. Category pages
+6. Sitemap + robots.txt

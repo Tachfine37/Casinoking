@@ -1,15 +1,18 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: CasinoKing Blog API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: articles
+    description: Article operations
+  - name: affiliates
+    description: Affiliate operations
 paths:
   /healthz:
     get:
@@ -24,6 +27,118 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /articles:
+    get:
+      operationId: getArticles
+      tags: [articles]
+      summary: Get published articles
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 9
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResponse"
+  /articles/{slug}:
+    get:
+      operationId: getArticleBySlug
+      tags: [articles]
+      summary: Get article by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+        "404":
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /articles/slugs/all:
+    get:
+      operationId: getAllSlugs
+      tags: [articles]
+      summary: Get all article slugs
+      responses:
+        "200":
+          description: List of slugs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slugs:
+                    type: array
+                    items:
+                      type: string
+                required:
+                  - slugs
+  /categories:
+    get:
+      operationId: getCategories
+      tags: [articles]
+      summary: Get all categories
+      responses:
+        "200":
+          description: List of categories with counts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CategoryCount"
+                required:
+                  - categories
+  /affiliates:
+    get:
+      operationId: getAffiliates
+      tags: [affiliates]
+      summary: Get active affiliates
+      responses:
+        "200":
+          description: List of affiliates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  affiliates:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Affiliate"
+                required:
+                  - affiliates
 components:
   schemas:
     HealthStatus:
@@ -33,4 +148,130 @@ components:
           type: string
       required:
         - status
-
+    Article:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        category:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+        author:
+          type: string
+          nullable: true
+        authorBio:
+          type: string
+          nullable: true
+        authorAvatar:
+          type: string
+          nullable: true
+        focusKeyword:
+          type: string
+          nullable: true
+        metaDescription:
+          type: string
+          nullable: true
+        date:
+          type: string
+          nullable: true
+        readTime:
+          type: string
+          nullable: true
+        featured:
+          type: boolean
+          nullable: true
+        published:
+          type: boolean
+          nullable: true
+        createdAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - title
+        - slug
+    ArticleListResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - articles
+        - total
+        - page
+        - limit
+        - totalPages
+    Affiliate:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        logo:
+          type: string
+          nullable: true
+        rating:
+          type: number
+          nullable: true
+        bonus:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        link:
+          type: string
+          nullable: true
+        badge:
+          type: string
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+        active:
+          type: boolean
+          nullable: true
+      required:
+        - id
+        - name
+    CategoryCount:
+      type: object
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+      required:
+        - category
+        - count
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
