@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Casino Reviews",
+    "slug": "casino-reviews",
+    "subcategories": [
+      { "name": "US Casinos", "slug": "us-casinos" },
+      { "name": "Crypto Casinos", "slug": "crypto" },
+      { "name": "Live Dealer", "slug": "live-dealer" }
+    ]
+  },
+  {
+    "name": "Slots",
+    "slug": "slots",
+    "subcategories": [
+      { "name": "Megaways Slots", "slug": "megaways" },
+      { "name": "High RTP Slots", "slug": "high-rtp" },
+      { "name": "Jackpot Slots", "slug": "jackpot" }
+    ]
+  },
+  {
+    "name": "Poker",
+    "slug": "poker",
+    "subcategories": [
+      { "name": "Texas Hold'em", "slug": "texas-holdem" },
+      { "name": "Tournament Strategy", "slug": "tournaments" },
+      { "name": "Online Poker Sites", "slug": "sites" }
+    ]
+  },
+  {
+    "name": "Sports Betting",
+    "slug": "sports-betting",
+    "subcategories": [
+      { "name": "NFL Betting", "slug": "nfl" },
+      { "name": "Parlays & Teasers", "slug": "parlays" },
+      { "name": "Betting Strategy", "slug": "strategy" }
+    ]
+  },
+  {
+    "name": "Bonuses",
+    "slug": "bonuses",
+    "subcategories": [
+      { "name": "No Deposit Bonuses", "slug": "no-deposit" },
+      { "name": "Welcome Bonuses", "slug": "welcome" },
+      { "name": "Free Spins", "slug": "free-spins" }
+    ]
+  },
+  {
+    "name": "Strategy",
+    "slug": "strategy",
+    "subcategories": [
+      { "name": "Blackjack", "slug": "blackjack" },
+      { "name": "Roulette", "slug": "roulette" },
+      { "name": "Bankroll Management", "slug": "bankroll" }
+    ]
+  }
+]

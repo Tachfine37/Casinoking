@@ -1,0 +1,69 @@
+Make these two changes to the existing project:
+
+1. ROUTING — Change the category route from /category/[category] to 
+/category/[...slug] (catch-all). This handles both /category/slots 
+and /category/slots/megaways without any future refactoring.
+In the category page component, read the slug array:
+- slug.length === 1 → filter Supabase by category only
+- slug.length === 2 → filter Supabase by category AND subcategory
+Update generateStaticParams and breadcrumbs accordingly.
+
+2. NAVBAR DROPDOWNS — Add hover dropdowns to the navbar using 
+/data/categories.json as the data source:
+
+Create /data/categories.json:
+[
+  { "name": "Casino Reviews", "slug": "casino-reviews",
+    "subcategories": [
+      { "name": "US Casinos", "slug": "us-casinos" },
+      { "name": "Crypto Casinos", "slug": "crypto" },
+      { "name": "Live Dealer", "slug": "live-dealer" }
+    ]
+  },
+  { "name": "Slots", "slug": "slots",
+    "subcategories": [
+      { "name": "Megaways Slots", "slug": "megaways" },
+      { "name": "High RTP Slots", "slug": "high-rtp" },
+      { "name": "Jackpot Slots", "slug": "jackpot" }
+    ]
+  },
+  { "name": "Poker", "slug": "poker",
+    "subcategories": [
+      { "name": "Texas Hold'em", "slug": "texas-holdem" },
+      { "name": "Tournament Strategy", "slug": "tournaments" },
+      { "name": "Online Poker Sites", "slug": "sites" }
+    ]
+  },
+  { "name": "Sports Betting", "slug": "sports-betting",
+    "subcategories": [
+      { "name": "NFL Betting", "slug": "nfl" },
+      { "name": "Parlays & Teasers", "slug": "parlays" },
+      { "name": "Betting Strategy", "slug": "strategy" }
+    ]
+  },
+  { "name": "Bonuses", "slug": "bonuses",
+    "subcategories": [
+      { "name": "No Deposit Bonuses", "slug": "no-deposit" },
+      { "name": "Welcome Bonuses", "slug": "welcome" },
+      { "name": "Free Spins", "slug": "free-spins" }
+    ]
+  },
+  { "name": "Strategy", "slug": "strategy",
+    "subcategories": [
+      { "name": "Blackjack", "slug": "blackjack" },
+      { "name": "Roulette", "slug": "roulette" },
+      { "name": "Bankroll Management", "slug": "bankroll" }
+    ]
+  }
+]
+
+Dropdown style:
+- Triggers on hover (desktop)
+- Dark background #0f0f14, gold left border accent
+- Fade + slide-down animation
+- Subcategory links turn gold on hover
+- Active category keeps gold underline
+
+Mobile:
+- Accordion toggle on tap to expand/collapse subcategories
+- Smooth animation

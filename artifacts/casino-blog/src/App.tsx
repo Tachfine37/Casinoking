@@ -24,7 +24,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/articles/:slug" component={Article} />
-      <Route path="/category/:category" component={Category} />
+      <Route path="/category/:rest*" component={Category} />
       <Route path="/about" component={About} />
       <Route component={NotFound} />
     </Switch>

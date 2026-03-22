@@ -1,0 +1,72 @@
+Navbar category links have a dropdown on hover that shows subcategories.
+Structure the navbar as follows:
+
+- Each top-level category (Casino Reviews, Slots, Poker, etc.) is hoverable
+- On hover: a dark dropdown appears below with subcategory links
+- Dropdown style: dark bg (#0f0f14), gold left border accent, subtle fade+slide 
+  animation on appear, gold text on hover per item
+- Subcategories are fetched from a /data/categories.json file for now 
+  (will be replaced by Supabase categories table later)
+
+/data/categories.json structure:
+[
+  {
+    "name": "Slots",
+    "slug": "slots",
+    "subcategories": [
+      { "name": "Megaways Slots", "slug": "megaways" },
+      { "name": "High RTP Slots", "slug": "high-rtp" },
+      { "name": "Jackpot Slots", "slug": "jackpot" }
+    ]
+  },
+  {
+    "name": "Bonuses",
+    "slug": "bonuses",
+    "subcategories": [
+      { "name": "No Deposit Bonuses", "slug": "no-deposit" },
+      { "name": "Welcome Bonuses", "slug": "welcome" },
+      { "name": "Free Spins", "slug": "free-spins" }
+    ]
+  },
+  {
+    "name": "Casino Reviews",
+    "slug": "casino-reviews",
+    "subcategories": [
+      { "name": "US Casinos", "slug": "us-casinos" },
+      { "name": "Crypto Casinos", "slug": "crypto" },
+      { "name": "Live Dealer", "slug": "live-dealer" }
+    ]
+  },
+  {
+    "name": "Poker",
+    "slug": "poker",
+    "subcategories": [
+      { "name": "Texas Hold'em", "slug": "texas-holdem" },
+      { "name": "Tournament Strategy", "slug": "tournaments" },
+      { "name": "Online Poker Sites", "slug": "sites" }
+    ]
+  },
+  {
+    "name": "Sports Betting",
+    "slug": "sports-betting",
+    "subcategories": [
+      { "name": "NFL Betting", "slug": "nfl" },
+      { "name": "Parlays & Teasers", "slug": "parlays" },
+      { "name": "Betting Strategy", "slug": "strategy" }
+    ]
+  },
+  {
+    "name": "Strategy",
+    "slug": "strategy",
+    "subcategories": [
+      { "name": "Blackjack", "slug": "blackjack" },
+      { "name": "Roulette", "slug": "roulette" },
+      { "name": "Bankroll Management", "slug": "bankroll" }
+    ]
+  }
+]
+
+Categories with no subcategories (like About) link directly with no dropdown.
+On mobile: dropdowns become accordion toggles (tap to expand/collapse).
+Use the catch-all route /category/[...slug] to handle both 
+/category/slots and /category/slots/megaways.
