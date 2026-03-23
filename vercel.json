@@ -1,0 +1,20 @@
+{
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install",
+  "outputDirectory": "artifacts/casino-blog/dist/public",
+  "env": {
+    "PORT": "3000",
+    "BASE_PATH": "/",
+    "API_PORT": "3001"
+  },
+  "envPrefix": [
+    "DATABASE_URL",
+    "API_PORT"
+  ],
+  "rewrites": [
+    {
+      "source": "/:path((?!api|_next|_static|.*\\..*|.*\\.html).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
