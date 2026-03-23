@@ -1,5 +1,6 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { setBaseUrl } from "@workspace/api-client-react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -8,6 +9,11 @@ import Article from "@/pages/Article";
 import Category from "@/pages/Category";
 import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
+
+// Configure API base URL for production deployments
+if (import.meta.env.PROD && import.meta.env.VITE_API_URL) {
+  setBaseUrl(import.meta.env.VITE_API_URL);
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
